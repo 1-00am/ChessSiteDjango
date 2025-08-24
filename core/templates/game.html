@@ -6,10 +6,18 @@
         href='https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css'
         integrity='sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU'
         crossorigin='anonymous'>
-    {% csrf_token %}
+    {% comment %} {% csrf_token %} {% endcomment %}
     <script>
         var csrftoken = '{{ csrf_token }}';
     </script>
+    <style type="text/css">
+    .highlight-white {
+    box-shadow: inset 0 0 3px 3px yellow;
+    }
+    .highlight-black {
+    box-shadow: inset 0 0 3px 3px blue;
+    }
+    </style>
 {% endblock extend_head %}
 
 {% block content %}
