@@ -1,6 +1,7 @@
-var board = null
-var $board = $('#board')
-var squareClass = 'square-55d63'
+let board = null
+let $board = $('#board')
+let squareClass = 'square-55d63'
+let legalSquares = null
 
 function highlightSquares (squares) {
     for (let i = 0; i < squares.length; i++) {
@@ -33,12 +34,22 @@ function onDragStart (source, piece, position, orientation) {
     }
 
     getMoves(source).then(data => {
-        highlightSquares(data['moves'])
+        legalSquares = data['moves']
+        highlightSquares(legalSquares)
     })
 }
 
 function onDrop (source, target, piece, newPos, oldPos, orientation) {
-    removeHighlights("white")
+    removeHighlights('white')
+    if (legalSquares === null) {
+        return 'snapback'
+    }
+    if (!legalSquares.includes(target)) {
+        legalSquares = null
+        return 'snapback'
+    }
+    console.log(legalSquares, source, target)
+    legalSquares = null
 }
 
 function onGameStart () {
@@ -51,7 +62,7 @@ function onGameStart () {
 async function initBoard() {
     const gameStartData = await onGameStart()
 
-    var config = {
+    let config = {
         draggable: true,
         position: 'start',
         orientation: gameStartData['player'],

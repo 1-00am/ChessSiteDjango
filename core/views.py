@@ -14,8 +14,7 @@ def play(request):
 def move(request): # handles all game-logic
     if request.method == 'POST':
         data = json.loads(request.body)
-        print(data.keys())
-
+        
         if 'from' in data.keys():      
             where_from = data['from']
             board = data['board']
