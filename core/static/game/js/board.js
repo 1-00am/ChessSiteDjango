@@ -15,14 +15,19 @@ function removeHighlights (color) {
     .removeClass('highlight-' + color)
 }
 
-async function getMoves(source) {
-    const response = await fetch('game/move', {
+async function getMoves(rq_type, source, piece) {
+    const response = await fetch(`/game/${gameId}/move`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrftoken
             },
-            body: JSON.stringify({ from: source, board: board.fen() })
+            body: JSON.stringify({ 
+                request_type: rq_type,
+                from: source,
+                board: board.fen(), 
+                piece: piece
+             })
         })
     return await response.json()
 }
@@ -33,7 +38,7 @@ function onDragStart (source, piece, position, orientation) {
         return false
     }
 
-    getMoves(source).then(data => {
+    getMoves(rq_type="onDragStart",source, piece).then(data => {
         legalSquares = data['moves']
         highlightSquares(legalSquares)
     })
@@ -53,8 +58,16 @@ function onDrop (source, target, piece, newPos, oldPos, orientation) {
 }
 
 function onGameStart () {
-    return fetch('game/move', {
-            method: 'GET'
+    console.log(gameId)
+    return fetch('/game/load', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ 
+                gameId: gameId    
+            })
         })
         .then(response => response.json())
 }
