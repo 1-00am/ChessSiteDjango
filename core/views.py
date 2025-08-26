@@ -14,7 +14,7 @@ def game(request, id):
     return render(request, 'game.html', context)
 
 def new_game(request):
-    game = Game()
+    game = GamePvsAI()
     game.save()
     return redirect(f'/game/{game.id}')
 
@@ -22,7 +22,7 @@ def load_game(request): # loads game of given id
     if request.method == 'POST':
         data = json.loads(request.body)
         game_id = data['gameId']
-        game = get_object_or_404(Game, pk=game_id)
+        game = get_object_or_404(GamePvsAI, pk=game_id)
         return JsonResponse({
             'game_id': game.id,
             'board': game.fen()
@@ -31,7 +31,7 @@ def load_game(request): # loads game of given id
 def move(request, id): # handles all game-logic
     if request.method == 'POST':
         data = json.loads(request.body)
-        game = get_object_or_404(Game, pk=id)
+        game = get_object_or_404(GamePvsAI, pk=id)
         
         if data['requestType'] == 'onDragStart':      
             where_from = data['from']
