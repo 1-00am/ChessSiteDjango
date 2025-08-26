@@ -5,7 +5,7 @@ from django.db import models
 class GamePvsAI(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     board = models.CharField(max_length=64, default='rnbqkbnrppppppppxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxPPPPPPPPRNBQKBNR')
-    player_color = models.CharField(max_length=1, default="w")
+    player_color = models.CharField(max_length=5, default="white")
 
     def fen(self): # return board in short-fen format
         brd = self.board

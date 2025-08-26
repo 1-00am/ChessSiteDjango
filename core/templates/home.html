@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Shmess Home</h1>
-<a href="{% url "new_game" %}">New Game</a>
+<form method="post" action="{% url "new_game" %}">
+    {% csrf_token %}
+    <select name="color" id="color">
+        <option value="white" selected="selected">White</option>
+        <option value="black">Black</option>
+    </select>
+    <button type="submit">Play</button>
+</form>
 {% endblock content %}

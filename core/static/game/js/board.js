@@ -93,7 +93,7 @@ async function initBoard() {
     let config = {
         draggable: true,
         position: gameStartData['board'],
-        orientation: gameStartData['player'],
+        orientation: gameStartData['player_color'],
         onDrop: onDrop,
         onDragStart: onDragStart,
         pieceTheme: '/static/img/chesspieces/wikipedia/{piece}.png'
