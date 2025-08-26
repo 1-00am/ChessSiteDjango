@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 import json
 from .chess.chess_game import *
-from .models import Game
+from .models import GamePvsAI
 
 # Create your views here.
 
@@ -23,7 +23,6 @@ def load_game(request): # loads game of given id
         data = json.loads(request.body)
         game_id = data['gameId']
         game = get_object_or_404(Game, pk=game_id)
-        print(game.fen())
         return JsonResponse({
             'game_id': game.id,
             'board': game.fen()
@@ -32,18 +31,16 @@ def load_game(request): # loads game of given id
 def move(request, id): # handles all game-logic
     if request.method == 'POST':
         data = json.loads(request.body)
+        game = get_object_or_404(Game, pk=id)
         
         if data['requestType'] == 'onDragStart':      
             where_from = data['from']
             piece = data['piece']
-            game = get_object_or_404(Game, pk=id)
             return JsonResponse({
                 'moves': get_moves(where_from, game.board, piece)
             })
-        elif data['requestType'] == 'onDrop':
-            game = get_object_or_404(Game, pk=id)
+        elif data['requestType'] == 'onDrop':           
             game.board = fen_to_64bit(data['board'])
-            print(game.board)
             game.save()
             return JsonResponse({
                 'winner': None,

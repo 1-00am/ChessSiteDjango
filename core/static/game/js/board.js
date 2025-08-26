@@ -53,7 +53,7 @@ function onDragStart (source, piece, position, orientation) {
         return false
     }
 
-    getMoves(rqType="onDragStart",source, piece).then(data => {
+    getMoves(rqType='onDragStart',source, piece).then(data => {
         legalSquares = data['moves']
         highlightSquares(legalSquares)
     })
@@ -69,7 +69,7 @@ async function onDrop (source, target, piece, newPos, oldPos, orientation) {
         return 'snapback'
     }
     legalSquares = null
-    const gameStateData = await postBoardState(rqType="onDrop", new_board=Chessboard.objToFen(newPos))
+    const gameStateData = await postBoardState(rqType='onDrop', new_board=Chessboard.objToFen(newPos))
     console.log(gameStateData)
 }
 
