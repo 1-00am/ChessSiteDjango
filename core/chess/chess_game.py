@@ -3,8 +3,14 @@ from .moves import *
 def start_pose_fen():
     return 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'
 
-def curr_player():
-    pass
+def fen_to_64bit(fen): # transforms short-fen into 64bit board
+    brd = ''
+    for i in range(len(fen)):
+        if fen[i].isdigit():
+            brd += 'x'*(int(fen[i]))
+        elif fen[i] != '/':
+            brd += fen[i]
+    return brd
 
 def get_moves(where_from, board, piece):
     moves_dict = {

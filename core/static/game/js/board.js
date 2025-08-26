@@ -15,7 +15,7 @@ function removeHighlights (color) {
     .removeClass('highlight-' + color)
 }
 
-async function getMoves(rq_type, source, piece) {
+async function getMoves(rqType, source, piece) {
     const response = await fetch(`/game/${gameId}/move`, {
             method: 'POST',
             headers: {
@@ -23,10 +23,25 @@ async function getMoves(rq_type, source, piece) {
                 'X-CSRFToken': csrftoken
             },
             body: JSON.stringify({ 
-                request_type: rq_type,
+                requestType: rqType,
                 from: source,
                 board: board.fen(), 
                 piece: piece
+             })
+        })
+    return await response.json()
+}
+
+async function postBoardState(rqType, new_board) {
+    const response = await fetch(`/game/${gameId}/move`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ 
+                requestType: rqType,
+                board: new_board, 
              })
         })
     return await response.json()
@@ -38,13 +53,13 @@ function onDragStart (source, piece, position, orientation) {
         return false
     }
 
-    getMoves(rq_type="onDragStart",source, piece).then(data => {
+    getMoves(rqType="onDragStart",source, piece).then(data => {
         legalSquares = data['moves']
         highlightSquares(legalSquares)
     })
 }
 
-function onDrop (source, target, piece, newPos, oldPos, orientation) {
+async function onDrop (source, target, piece, newPos, oldPos, orientation) {
     removeHighlights('white')
     if (legalSquares === null) {
         return 'snapback'
@@ -53,12 +68,12 @@ function onDrop (source, target, piece, newPos, oldPos, orientation) {
         legalSquares = null
         return 'snapback'
     }
-    console.log(legalSquares, source, target)
     legalSquares = null
+    const gameStateData = await postBoardState(rqType="onDrop", new_board=Chessboard.objToFen(newPos))
+    console.log(gameStateData)
 }
 
 function onGameStart () {
-    console.log(gameId)
     return fetch('/game/load', {
             method: 'POST',
             headers: {
@@ -77,7 +92,7 @@ async function initBoard() {
 
     let config = {
         draggable: true,
-        position: 'start',
+        position: gameStartData['board'],
         orientation: gameStartData['player'],
         onDrop: onDrop,
         onDragStart: onDragStart,

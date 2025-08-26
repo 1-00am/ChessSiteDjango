@@ -1,5 +1,5 @@
 def get_pawn_moves(where_from, board, piece_color):
-    moves = []
+    moves = ['e3', 'e4', 'e5']
     
     return moves
 
