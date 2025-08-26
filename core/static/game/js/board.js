@@ -69,7 +69,8 @@ function onDrop (source, target, piece, newPos, oldPos, orientation) {
         return 'snapback'
     }
     legalSquares = null
-    const gameStateData = postBoardState(rqType='onDrop', new_board=Chessboard.objToFen(newPos))
+    postBoardState(rqType='onDrop', new_board=Chessboard.objToFen(newPos))
+    .then(data => console.log(data))
 }
 
 function onGameStart () {

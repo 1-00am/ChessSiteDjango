@@ -49,7 +49,6 @@ def move(request, id): # handles all game-logic
             game.save()
             return JsonResponse({
                 'winner': None,
-                'board': game.fen()
             })
         else:
             # should not go here for now
