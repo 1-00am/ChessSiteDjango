@@ -26,7 +26,6 @@ def load_game(request): # loads game of id given in request
         data = json.loads(request.body)
         game_id = data['gameId']
         game = get_object_or_404(GamePvsAI, pk=game_id)
-        print(game_id, game.player_color)
         return JsonResponse({
             'game_id': game.id,
             'board': game.fen(),
@@ -41,6 +40,7 @@ def move(request, id): # handles all game-logic
         if data['requestType'] == 'onDragStart':      
             where_from = data['from']
             piece = data['piece']
+            print(get_moves(where_from, game.board, piece))
             return JsonResponse({
                 'moves': get_moves(where_from, game.board, piece)
             })
@@ -52,9 +52,10 @@ def move(request, id): # handles all game-logic
                 'board': game.fen()
             })
         else:
+            # should not go here for now
             pass
     else:
+        # should not go here for now
         return JsonResponse({
-            'player': 'white'
         })
 

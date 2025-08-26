@@ -59,7 +59,7 @@ function onDragStart (source, piece, position, orientation) {
     })
 }
 
-async function onDrop (source, target, piece, newPos, oldPos, orientation) {
+function onDrop (source, target, piece, newPos, oldPos, orientation) {
     removeHighlights('white')
     if (legalSquares === null) {
         return 'snapback'
@@ -69,8 +69,7 @@ async function onDrop (source, target, piece, newPos, oldPos, orientation) {
         return 'snapback'
     }
     legalSquares = null
-    const gameStateData = await postBoardState(rqType='onDrop', new_board=Chessboard.objToFen(newPos))
-    console.log(gameStateData)
+    const gameStateData = postBoardState(rqType='onDrop', new_board=Chessboard.objToFen(newPos))
 }
 
 function onGameStart () {
