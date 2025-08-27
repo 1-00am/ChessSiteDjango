@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 import json
 from .chess.chess_game import *
+from .chess.board_operations import fen_to_64bit
 from .models import GamePvsAI
 
 # Create your views here.
@@ -40,7 +41,6 @@ def move(request, id): # handles all game-logic
         if data['requestType'] == 'onDragStart':      
             where_from = data['from']
             piece = data['piece']
-            print(get_moves(where_from, game.board, piece))
             return JsonResponse({
                 'moves': get_moves(where_from, game.board, piece)
             })
