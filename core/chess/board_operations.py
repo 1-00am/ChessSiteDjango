@@ -1,6 +1,15 @@
 def start_pose_fen():
     return 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'
 
+def color_of(piece):
+    return "b" if piece.islower() else "w"
+
+def are_enemies(piece1, piece2):
+    return color_of(piece1) != color_of(piece2)
+
+def are_same_type(piece1, piece2):
+    return piece1.lower() == piece2.lower()
+
 def field_index(field): # return index of a field in 64bit board (eg. 'a8' gives 0, 'g1' gives 62)
     row = int(field[1])
     col = ord(field[0]) - 97

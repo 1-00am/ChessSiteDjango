@@ -41,11 +41,16 @@ def move(request, id): # handles all game-logic
         if data['requestType'] == 'onDragStart':      
             where_from = data['from']
             piece = data['piece']
+            last_move = (game.last_move_from, game.last_move_to) if game.last_move_from else None
+            moves, sp_moves = get_moves(where_from, game.board, piece, last_move)
             return JsonResponse({
-                'moves': get_moves(where_from, game.board, piece)
+                'moves': moves,
+                'sp_moves': sp_moves
             })
         elif data['requestType'] == 'onDrop':           
             game.board = fen_to_64bit(data['board'])
+            game.last_move_from = data['from']
+            game.last_move_to = data['to']
             game.save()
             return JsonResponse({
                 'winner': None,

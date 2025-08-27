@@ -32,7 +32,7 @@ async function getMoves(rqType, source, piece) {
     return await response.json()
 }
 
-async function postBoardState(rqType, new_board) {
+async function postBoardState(rqType, newBoard, source, target) {
     const response = await fetch(`/game/${gameId}/move`, {
             method: 'POST',
             headers: {
@@ -41,17 +41,20 @@ async function postBoardState(rqType, new_board) {
             },
             body: JSON.stringify({ 
                 requestType: rqType,
-                board: new_board, 
-             })
+                from: source,
+                to: target,
+                board: newBoard,
+            })
         })
     return await response.json()
 }
 
 function onDragStart (source, piece, position, orientation) {
-    if ((orientation === 'white' && piece.search(/^w/) === -1) ||
-        (orientation === 'black' && piece.search(/^b/) === -1)) {
-        return false
-    }
+    // if ((orientation === 'white' && piece.search(/^w/) === -1) ||
+    //     (orientation === 'black' && piece.search(/^b/) === -1)) {
+    //     return false
+    // }
+    removeHighlights('white')
 
     getMoves(rqType='onDragStart',source, piece).then(data => {
         legalSquares = data['moves']
@@ -69,7 +72,7 @@ function onDrop (source, target, piece, newPos, oldPos, orientation) {
         return 'snapback'
     }
     legalSquares = null
-    postBoardState(rqType='onDrop', new_board=Chessboard.objToFen(newPos))
+    postBoardState(rqType='onDrop', Chessboard.objToFen(newPos), source, target)
     .then(data => console.log(data))
 }
 

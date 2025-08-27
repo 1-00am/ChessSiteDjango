@@ -5,7 +5,10 @@ from django.db import models
 class GamePvsAI(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     board = models.CharField(max_length=64, default='rnbqkbnrppppppppxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxPPPPPPPPRNBQKBNR')
-    player_color = models.CharField(max_length=5, default="white")
+    player_color = models.CharField(max_length=5, default='white')
+    move_count = models.IntegerField(default=1) #counts white move + black response as 2 separate moves
+    last_move_from = models.CharField(max_length=2, null=True, blank=True, default=None)
+    last_move_to = models.CharField(max_length=2, null=True, blank=True, default=None)
 
     def fen(self): # return board in short-fen format
         brd = self.board
