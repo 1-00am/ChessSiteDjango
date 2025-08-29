@@ -58,29 +58,33 @@ def get_knight_moves(source_field, board, piece_color):
             moves.append(id)
     return moves
 
-def get_bishop_moves(source_field, board, piece_color):
-    moves = []
-    return moves
-
-def get_rook_moves(source_field, board, piece_color):
+def move_search_in_directions(source_field, board, directions): # similiar code for bishop and rook made into a function
     moves = []
     source_id = index_from_field(source_field)
-    rook = board[source_id]
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-    for dir in directions:
+    myself = board[source_id]
+    for dire in directions:
         target_id = source_id
         while True:
-            target_id += 8*dir[0] + dir[1]
-            if target_id < 0 or target_id > 63 or are_friends(rook, board[target_id]):
+            target_id += 8*dire[0] + dire[1]
+            if target_id < 0 or target_id > 63 or are_friends(myself, board[target_id]):
                 break
-            elif abs(target_id%8 - (target_id-dir[1])%8) > 1: # break if changed rows during vertical moves search 
+            elif abs(target_id%8 - (target_id-dire[1])%8) > 1: # break if changed rows during vertical moves search 
                 break
-            elif are_enemies(rook, board[target_id]):
+            elif are_enemies(myself, board[target_id]):
                 moves.append(target_id) # break after adding enemy piece as move
                 break
             else:
                 moves.append(target_id) # add empty field field
     return moves
+
+def get_bishop_moves(source_field, board, piece_color):
+    directions = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+    return move_search_in_directions(source_field, board, directions)
+
+def get_rook_moves(source_field, board, piece_color):
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    return move_search_in_directions(source_field, board, directions)
+    
 
 def get_queen_moves(source_field, board, piece_color):
     moves = []
