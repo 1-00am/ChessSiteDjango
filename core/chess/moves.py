@@ -26,15 +26,22 @@ def get_king_sp_moves(source_field, board, piece_color, last_move):
 
 def get_pawn_moves(source_field, board, piece_color):
     source_id = index_from_field(source_field)
+    pawn = board[source_id]
     row = int(source_field[1])
     moves = []
 
     vector = -1 if piece_color == 'w' else 1
     start_row = 2 if piece_color == 'w' else 7
     if source_id < 56:
-        moves.append(source_id + 8*vector)
-    if row == start_row:
-        moves.append(source_id + 16*vector)
+        if board[source_id + 8*vector] == 'x':
+            moves.append(source_id + 8*vector) # standard move by 1 square
+        for i in (-1, 1):
+            target_id = source_id + 8*vector + i
+            target = board[target_id]
+            if are_enemies(pawn, target):
+                moves.append(target_id) # move diagonally when taking
+    if row == start_row: 
+        moves.append(source_id + 16*vector) # first move by 2 squares
     return moves
 
 def get_knight_moves(where_from, board, piece_color):

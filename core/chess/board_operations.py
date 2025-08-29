@@ -4,10 +4,10 @@ def start_pose_fen():
 # in the following code "piece" refers to 1-letter string such as 'r', 'R', 'Q' etc.
 
 def color_of(piece): 
-    return "b" if piece.islower() else "w"
+    return 'x' if piece == 'x' else 'b' if piece.islower() else 'w'
 
 def are_enemies(piece1, piece2):
-    return color_of(piece1) != color_of(piece2)
+    return False if (piece1 == 'x' or piece2 == 'x') else color_of(piece1) != color_of(piece2)
 
 def are_same_type(piece1, piece2):
     return piece1.lower() == piece2.lower()
