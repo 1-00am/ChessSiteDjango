@@ -64,6 +64,22 @@ def get_bishop_moves(source_field, board, piece_color):
 
 def get_rook_moves(source_field, board, piece_color):
     moves = []
+    source_id = index_from_field(source_field)
+    rook = board[source_id]
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    for dir in directions:
+        target_id = source_id
+        while True:
+            target_id += 8*dir[0] + dir[1]
+            if target_id < 0 or target_id > 63 or are_friends(rook, board[target_id]):
+                break
+            elif abs(target_id%8 - (target_id-dir[1])%8) > 1: # break if changed rows during vertical moves search 
+                break
+            elif are_enemies(rook, board[target_id]):
+                moves.append(target_id) # break after adding enemy piece as move
+                break
+            else:
+                moves.append(target_id) # add empty field field
     return moves
 
 def get_queen_moves(source_field, board, piece_color):
