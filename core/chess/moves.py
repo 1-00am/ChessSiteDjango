@@ -47,6 +47,15 @@ def get_pawn_moves(source_field, board, piece_color):
 
 def get_knight_moves(source_field, board, piece_color):
     moves = []
+    source_id = index_from_field(source_field)
+    knight = board[source_id]
+
+    target_ids = [id for i in (-2, 2) for j in (-1, 1) for id in (source_id+8*i+j, source_id+8*j+i)]
+    for id in target_ids:
+        if abs(id%8 - source_id%8) > 2: # protection from going "a -> h" and etc.
+                continue
+        if id >= 0 and id < 64 and not are_friends(knight, board[id]):
+            moves.append(id)
     return moves
 
 def get_bishop_moves(source_field, board, piece_color):
