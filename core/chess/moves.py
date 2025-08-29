@@ -41,7 +41,7 @@ def get_pawn_moves(source_field, board, piece_color):
             target = board[target_id]
             if are_enemies(pawn, target):
                 moves.append(target_id) # move diagonally when taking
-    if row == start_row: 
+    if row == start_row and board[source_id+8*vector] == 'x' and board[source_id+16*vector] == 'x': 
         moves.append(source_id + 16*vector) # first move by 2 squares
     return moves
 
@@ -85,7 +85,6 @@ def get_rook_moves(source_field, board, piece_color):
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     return move_search_in_directions(source_field, board, directions)
     
-
 def get_queen_moves(source_field, board, piece_color):
     moves = []
     return moves
