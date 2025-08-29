@@ -33,7 +33,7 @@ def get_pawn_moves(source_field, board, piece_color):
 
     vector = -1 if piece_color == 'w' else 1
     start_row = 2 if piece_color == 'w' else 7
-    if source_id < 56:
+    if source_id > 7 and source_id < 56:
         if board[source_id + 8*vector] == 'x':
             moves.append(source_id + 8*vector) # standard move by 1 square
         for i in (-1, 1):
@@ -68,6 +68,6 @@ def get_king_moves(source_field, board, piece_color):
     for i in (-1, 0, 1):
         for j in (-1, 0, 1):
             target_id = source_id + i*8 +j
-            if target_id in range(64) and not are_friends(king, board[target_id]):
-                moves.append(target_id)
+            if target_id >= 0 and target_id < 64 and not are_friends(king, board[target_id]):
+                moves.append(target_id) # standard moves by 1 square
     return moves

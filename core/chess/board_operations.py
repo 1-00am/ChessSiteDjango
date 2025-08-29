@@ -1,7 +1,7 @@
 def start_pose_fen():
     return 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'
 
-# in the following code "piece" refers to 1-letter string such as 'r', 'R', 'Q' etc.
+# in the following code "piece" refers to 1-letter string such as 'r', 'R', 'Q' etc. or 'x' for empty field
 
 def color_of(piece): 
     return 'x' if piece == 'x' else 'b' if piece.islower() else 'w'
