@@ -2,6 +2,7 @@ let board = null
 let $board = $('#board')
 let squareClass = 'square-55d63'
 let legalSquares = null
+let spMoves
 
 function highlightSquares (squares) {
     for (let i = 0; i < squares.length; i++) {
@@ -32,7 +33,7 @@ async function getMoves(rqType, source, piece) {
     return await response.json()
 }
 
-async function postBoardState(rqType, newBoard, source, target) {
+async function postBoardState(rqType, newBoard, source, target, special) {
     const response = await fetch(`/game/${gameId}/move`, {
             method: 'POST',
             headers: {
@@ -44,6 +45,7 @@ async function postBoardState(rqType, newBoard, source, target) {
                 from: source,
                 to: target,
                 board: newBoard,
+                special: special
             })
         })
     return await response.json()
@@ -58,6 +60,7 @@ function onDragStart (source, piece, position, orientation) {
 
     getMoves(rqType='onDragStart',source, piece).then(data => {
         legalSquares = data['moves']
+        spMoves = data['sp_moves']
         highlightSquares(legalSquares)
     })
 }
@@ -72,8 +75,12 @@ function onDrop (source, target, piece, newPos, oldPos, orientation) {
         return 'snapback'
     }
     legalSquares = null
-    postBoardState(rqType='onDrop', Chessboard.objToFen(newPos), source, target)
-    .then(data => console.log(data))
+    special = spMoves.hasOwnProperty(target) ? spMoves[target] : null
+    postBoardState(rqType='onDrop', Chessboard.objToFen(newPos), source, target, special)
+    .then(data => {
+        console.log(data)
+        board.position(data['board'])
+    })
 }
 
 function onGameStart () {

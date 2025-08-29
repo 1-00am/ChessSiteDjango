@@ -3,7 +3,7 @@ from .board_operations import *
 def get_pawn_sp_moves(source_field, board, piece_color, last_move):
     if not last_move:
         return {}
-    source_id = field_index(source_field)
+    source_id = index_from_field(source_field)
     pawn = board[source_id]
     vector = -1 if piece_color == 'w' else 1
     last_move_from, last_move_to = last_move
@@ -12,7 +12,7 @@ def get_pawn_sp_moves(source_field, board, piece_color, last_move):
     for i in (-1, 1):
         if abs(source_id%8 - (source_id+i)%8) == 1:
             nbr = board[source_id+i]
-            if field_index(last_move_to) == source_id+i:
+            if index_from_field(last_move_to) == source_id+i:
                 if are_same_type(pawn, nbr) and are_enemies(pawn, nbr) and last_move_from[0] == last_move_to[0]:
                     attack_field = source_id + 8*vector + i
                     sp_moves[f'{field_from_index(attack_field)}'] = 'enpassant'
@@ -23,7 +23,7 @@ def get_king_sp_moves(source_field, board, piece_color, last_move):
     pass
 
 def get_pawn_moves(source_field, board, piece_color):
-    source_id = field_index(source_field)
+    source_id = index_from_field(source_field)
     row = int(source_field[1])
     moves = []
 
