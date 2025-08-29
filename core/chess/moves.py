@@ -39,6 +39,8 @@ def get_pawn_moves(source_field, board):
             moves.append(source_id + 8*vector) # standard move by 1 square
         for i in (-1, 1):
             target_id = source_id + 8*vector + i
+            if abs(target_id%8 - source_id%8) > 1: # protection from going "a -> h" and etc.
+                continue
             target = board[target_id]
             if are_enemies(pawn, target):
                 moves.append(target_id) # move diagonally when taking
@@ -54,7 +56,7 @@ def get_knight_moves(source_field, board):
     target_ids = [id for i in (-2, 2) for j in (-1, 1) for id in (source_id+8*i+j, source_id+8*j+i)]
     for id in target_ids:
         if abs(id%8 - source_id%8) > 2: # protection from going "a -> h" and etc.
-                continue
+            continue
         if id >= 0 and id < 64 and not are_friends(knight, board[id]):
             moves.append(id)
     return moves
