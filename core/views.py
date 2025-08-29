@@ -16,10 +16,10 @@ def game(request, id):
 def new_game(request):
     if request.method == 'POST':
         color = request.POST.get('color')
-    game = GamePvsAI()
-    game.player_color = color
-    game.save()
-    return redirect(f'/game/{game.id}')
+        game = GamePvsAI()
+        game.player_color = color
+        game.save()
+        return redirect(f'/game/{game.id}')
 
 def load_game(request): # loads game of id given in request
     if request.method == 'POST':
@@ -27,7 +27,6 @@ def load_game(request): # loads game of id given in request
         game_id = data['gameId']
         game = get_object_or_404(GamePvsAI, pk=game_id)
         return JsonResponse({
-            'game_id': game.id,
             'board': game.fen(),
             'player_color': game.player_color,
         })

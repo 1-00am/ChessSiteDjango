@@ -10,19 +10,20 @@ def get_pawn_sp_moves(source_field, board, piece_color, last_move):
     last_move_to = index_from_field(last_move[1])
 
     sp_moves = {}
-    for i in (-1, 1):
+    # enpassant detection
+    for i in (-1, 1): 
         nbr_id = source_id + i
         if abs(source_id%8 - (nbr_id)%8) == 1: # protection from going "a -> h" and "h -> a" file
             nbr = board[nbr_id]
             if last_move_to == nbr_id:
                 attack_field = nbr_id + 8*vector
                 if are_same_type(pawn, nbr) and are_enemies(pawn, nbr) and abs(last_move_from - (nbr_id)) == 16:
-                    sp_moves[f'{field_from_index(attack_field)}'] = 'enpassant'
+                    sp_moves[field_from_index(attack_field)] = 'enpassant'
     return sp_moves
     
 
 def get_king_sp_moves(source_field, board, piece_color, last_move):
-    pass
+    return {}
 
 def get_pawn_moves(source_field, board, piece_color):
     source_id = index_from_field(source_field)
@@ -44,22 +45,29 @@ def get_pawn_moves(source_field, board, piece_color):
         moves.append(source_id + 16*vector) # first move by 2 squares
     return moves
 
-def get_knight_moves(where_from, board, piece_color):
+def get_knight_moves(source_field, board, piece_color):
     moves = []
     return moves
 
-def get_bishop_moves(where_from, board, piece_color):
+def get_bishop_moves(source_field, board, piece_color):
     moves = []
     return moves
 
-def get_rook_moves(where_from, board, piece_color):
+def get_rook_moves(source_field, board, piece_color):
     moves = []
     return moves
 
-def get_queen_moves(where_from, board, piece_color):
+def get_queen_moves(source_field, board, piece_color):
     moves = []
     return moves
 
-def get_king_moves(where_from, board, piece_color):
+def get_king_moves(source_field, board, piece_color):
     moves = []
+    source_id = index_from_field(source_field)
+    king = board[source_id]
+    for i in (-1, 0, 1):
+        for j in (-1, 0, 1):
+            target_id = source_id + i*8 +j
+            if target_id in range(64) and not are_friends(king, board[target_id]):
+                moves.append(target_id)
     return moves

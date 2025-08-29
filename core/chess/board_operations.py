@@ -9,6 +9,9 @@ def color_of(piece):
 def are_enemies(piece1, piece2):
     return False if (piece1 == 'x' or piece2 == 'x') else color_of(piece1) != color_of(piece2)
 
+def are_friends(piece1, piece2):
+    return False if (piece1 == 'x' or piece2 == 'x') else color_of(piece1) == color_of(piece2)
+
 def are_same_type(piece1, piece2):
     return piece1.lower() == piece2.lower()
 

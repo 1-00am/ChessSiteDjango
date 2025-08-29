@@ -33,7 +33,7 @@ def make_move(source, target, game, special=None):
 
     board = board[:target_id] + board[source_id] + board[target_id+1:]
     board = board[:source_id] + 'x' + board[source_id+1:]
-    if special == "enpassant":
+    if special == 'enpassant':
         enemy_pawn_id = index_from_field(game.last_move_to)
         board = board[:enemy_pawn_id] + 'x' + board[enemy_pawn_id+1:]
 
