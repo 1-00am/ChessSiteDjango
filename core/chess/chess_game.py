@@ -1,7 +1,7 @@
 from .moves import *
 from .board_operations import field_from_index, index_from_field
 
-def get_moves(source, board, piece, last_move): #returns moves as an array, and dict of special moves among them (e.g. 'castle' 'enpassant')
+def get_moves(source, board, piece, last_move): #returns moves as an array, and dict of special moves among them (e.g. 'long_castle' 'enpassant')
     moves_dict = {
         'P': get_pawn_moves,
         'N': get_knight_moves,

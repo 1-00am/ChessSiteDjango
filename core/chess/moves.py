@@ -68,6 +68,8 @@ def get_king_moves(source_field, board, piece_color):
     for i in (-1, 0, 1):
         for j in (-1, 0, 1):
             target_id = source_id + i*8 +j
+            if abs(target_id%8 - source_id%8) > 1: # protection from going "a -> h" and "h -> a" file
+                continue
             if target_id >= 0 and target_id < 64 and not are_friends(king, board[target_id]):
                 moves.append(target_id) # standard moves by 1 square
     return moves
