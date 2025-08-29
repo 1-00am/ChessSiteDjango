@@ -86,8 +86,7 @@ def get_rook_moves(source_field, board, piece_color):
     return move_search_in_directions(source_field, board, directions)
     
 def get_queen_moves(source_field, board, piece_color):
-    moves = []
-    return moves
+    return get_rook_moves(source_field, board, piece_color) + get_bishop_moves(source_field, board, piece_color)
 
 def get_king_moves(source_field, board, piece_color):
     moves = []
