@@ -1,11 +1,12 @@
 from .board_operations import *
 
-def get_pawn_sp_moves(source_field, board, piece_color, last_move):
+def get_pawn_sp_moves(source_field, board, last_move):
     if not last_move:
         return {}
     source_id = index_from_field(source_field)
     pawn = board[source_id]
-    vector = -1 if piece_color == 'w' else 1
+    color = 'w' if pawn.isupper() else 'b'
+    vector = -1 if color == 'w' else 1
     last_move_from = index_from_field(last_move[0])
     last_move_to = index_from_field(last_move[1])
 
@@ -21,18 +22,18 @@ def get_pawn_sp_moves(source_field, board, piece_color, last_move):
                     sp_moves[field_from_index(attack_field)] = 'enpassant'
     return sp_moves
     
-
-def get_king_sp_moves(source_field, board, piece_color, last_move):
+def get_king_sp_moves(source_field, board, last_move):
     return {}
 
-def get_pawn_moves(source_field, board, piece_color):
+def get_pawn_moves(source_field, board):
     source_id = index_from_field(source_field)
     pawn = board[source_id]
+    color = 'w' if pawn.isupper() else 'b'
     row = int(source_field[1])
     moves = []
 
-    vector = -1 if piece_color == 'w' else 1
-    start_row = 2 if piece_color == 'w' else 7
+    vector = -1 if color == 'w' else 1
+    start_row = 2 if color == 'w' else 7
     if source_id > 7 and source_id < 56:
         if board[source_id + 8*vector] == 'x':
             moves.append(source_id + 8*vector) # standard move by 1 square
@@ -45,7 +46,7 @@ def get_pawn_moves(source_field, board, piece_color):
         moves.append(source_id + 16*vector) # first move by 2 squares
     return moves
 
-def get_knight_moves(source_field, board, piece_color):
+def get_knight_moves(source_field, board):
     moves = []
     source_id = index_from_field(source_field)
     knight = board[source_id]
@@ -77,18 +78,18 @@ def move_search_in_directions(source_field, board, directions): # similiar code 
                 moves.append(target_id) # add empty field field
     return moves
 
-def get_bishop_moves(source_field, board, piece_color):
+def get_bishop_moves(source_field, board):
     directions = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
     return move_search_in_directions(source_field, board, directions)
 
-def get_rook_moves(source_field, board, piece_color):
+def get_rook_moves(source_field, board):
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     return move_search_in_directions(source_field, board, directions)
     
-def get_queen_moves(source_field, board, piece_color):
-    return get_rook_moves(source_field, board, piece_color) + get_bishop_moves(source_field, board, piece_color)
+def get_queen_moves(source_field, board):
+    return get_rook_moves(source_field, board) + get_bishop_moves(source_field, board)
 
-def get_king_moves(source_field, board, piece_color):
+def get_king_moves(source_field, board):
     moves = []
     source_id = index_from_field(source_field)
     king = board[source_id]

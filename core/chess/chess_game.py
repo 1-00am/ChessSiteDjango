@@ -14,16 +14,15 @@ def get_moves(source, board, piece, last_move): #returns moves as an array, and 
         'P': get_pawn_sp_moves,
         'K': get_king_sp_moves
     }
-    piece_color = piece[0] # piece is a 2-letter string where [0] is color and [1] is type
-    piece_type = piece[1]
+    piece_type = piece[1] # piece is a 2-letter string where [0] is color and [1] is type
 
-    sp_moves = sp_moves_dict[piece_type](source, board, piece_color, last_move) if piece_type in ('P', 'K') else {}
-    moves = moves_dict[piece_type](source, board, piece_color)
+    sp_moves = sp_moves_dict[piece_type](source, board, last_move) if piece_type in ('P', 'K') else {}
+    moves = moves_dict[piece_type](source, board)
 
     moves = [field_from_index(move) for move in moves.copy()]
     for move in sp_moves.keys():
         moves.append(move)
-
+    print(moves, sp_moves)
     return moves, sp_moves
 
 def make_move(source, target, game, special=None):
