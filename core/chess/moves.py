@@ -6,15 +6,17 @@ def get_pawn_sp_moves(source_field, board, piece_color, last_move):
     source_id = index_from_field(source_field)
     pawn = board[source_id]
     vector = -1 if piece_color == 'w' else 1
-    last_move_from, last_move_to = last_move
+    last_move_from = index_from_field(last_move[0])
+    last_move_to = index_from_field(last_move[1])
 
     sp_moves = {}
     for i in (-1, 1):
-        if abs(source_id%8 - (source_id+i)%8) == 1:
-            nbr = board[source_id+i]
-            if index_from_field(last_move_to) == source_id+i:
-                if are_same_type(pawn, nbr) and are_enemies(pawn, nbr) and last_move_from[0] == last_move_to[0]:
-                    attack_field = source_id + 8*vector + i
+        nbr_id = source_id + i
+        if abs(source_id%8 - (nbr_id)%8) == 1: # protection from going "a -> h" and "h -> a" file
+            nbr = board[nbr_id]
+            if last_move_to == nbr_id:
+                attack_field = nbr_id + 8*vector
+                if are_same_type(pawn, nbr) and are_enemies(pawn, nbr) and abs(last_move_from - (nbr_id)) == 16:
                     sp_moves[f'{field_from_index(attack_field)}'] = 'enpassant'
     return sp_moves
     
