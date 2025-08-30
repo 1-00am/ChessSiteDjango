@@ -26,7 +26,7 @@ def field_from_index(id): # return a field in standard notation from given board
     row = str(8 - (id-col_num)//8)
     return col_let+row
 
-def fen_to_64bit(fen): # transforms short-fen into 64bit board
+def fen_to_64char(fen): # transforms short-fen into 64-character board
     brd = ''
     for i in range(len(fen)):
         if fen[i].isdigit():

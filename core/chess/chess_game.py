@@ -22,7 +22,7 @@ def get_moves(source, board, piece, last_move): #returns moves as an array, and 
     moves = [field_from_index(move) for move in moves.copy()]
     for move in sp_moves.keys():
         moves.append(move)
-    print(moves, sp_moves)
+
     return moves, sp_moves
 
 def make_move(source, target, game, special=None):
