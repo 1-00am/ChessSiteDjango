@@ -15,7 +15,7 @@ def are_friends(piece1, piece2):
 def are_same_type(piece1, piece2):
     return piece1.lower() == piece2.lower()
 
-def index_from_field(field): # return index of a field in 64bit board (e.g. 'a8' gives 0, 'g1' gives 62)
+def index_from_field(field): # return index of a field in 64-character board (e.g. 'a8' gives 0, 'g1' gives 62)
     row = int(field[1])
     col = ord(field[0]) - 97
     return 8*(8-row) + col

@@ -5,7 +5,7 @@ def get_pawn_sp_moves(source_field, board, last_move):
         return {}
     source_id = index_from_field(source_field)
     pawn = board[source_id]
-    color = 'w' if pawn.isupper() else 'b'
+    color = color_of(pawn)
     vector = -1 if color == 'w' else 1
     last_move_from = index_from_field(last_move[0])
     last_move_to = index_from_field(last_move[1])
@@ -14,12 +14,29 @@ def get_pawn_sp_moves(source_field, board, last_move):
     # enpassant detection
     for i in (-1, 1): 
         nbr_id = source_id + i
-        if abs(source_id%8 - (nbr_id)%8) == 1: # protection from going "a -> h" and "h -> a" file
-            nbr = board[nbr_id]
-            if last_move_to == nbr_id:
-                attack_field = nbr_id + 8*vector
-                if are_same_type(pawn, nbr) and are_enemies(pawn, nbr) and abs(last_move_from - (nbr_id)) == 16:
-                    sp_moves[field_from_index(attack_field)] = 'enpassant'
+        if abs(source_id%8 - (nbr_id)%8) != 1: # protection from going "a -> h" and "h -> a" file
+            continue 
+        nbr = board[nbr_id]
+        if last_move_to == nbr_id:
+            target_id = nbr_id + 8*vector
+            if are_same_type(pawn, nbr) and are_enemies(pawn, nbr) and abs(last_move_from - (nbr_id)) == 16:
+                sp_moves[field_from_index(target_id)] = 'enpassant'
+    # promotion (only queen now)
+    promo_row = 1 if color == 'w' else 6
+    print(promo_row, source_id//8)   
+    if source_id // 8 == promo_row:
+        for i in (-1, 1):
+            target_id = source_id + 8*vector + i
+            if target_id < 0 or target_id > 63:
+                continue
+            target = board[target_id]
+            if abs(source_id%8 - (target_id)%8) != 1:
+                continue
+            if not are_friends(pawn, target):
+                sp_moves[field_from_index(target_id)] = 'promotion'
+        target_id = source_id + 8*vector
+        if board[target_id] == 'x':
+            sp_moves[field_from_index(target_id)] = 'promotion'
     return sp_moves
     
 def get_king_sp_moves(source_field, board, last_move):
@@ -28,7 +45,7 @@ def get_king_sp_moves(source_field, board, last_move):
 def get_pawn_moves(source_field, board):
     source_id = index_from_field(source_field)
     pawn = board[source_id]
-    color = 'w' if pawn.isupper() else 'b'
+    color = color_of(pawn)
     row = int(source_field[1])
     moves = []
 
@@ -71,13 +88,13 @@ def move_search_in_directions(source_field, board, directions): # similiar code 
             target_id += 8*dire[0] + dire[1]
             if target_id < 0 or target_id > 63 or are_friends(myself, board[target_id]):
                 break
-            elif abs(target_id%8 - (target_id-dire[1])%8) > 1: # break if changed rows during vertical moves search 
+            elif abs(target_id%8 - (target_id-dire[1])%8) > 1: # break if looped over rows during vertical moves search 
                 break
             elif are_enemies(myself, board[target_id]):
                 moves.append(target_id) # break after adding enemy piece as move
                 break
             else:
-                moves.append(target_id) # add empty field field
+                moves.append(target_id) # add empty field
     return moves
 
 def get_bishop_moves(source_field, board):

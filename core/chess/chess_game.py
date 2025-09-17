@@ -35,6 +35,11 @@ def make_move(source, target, game, special=None):
     if special == 'enpassant':
         enemy_pawn_id = index_from_field(game.last_move_to)
         board = board[:enemy_pawn_id] + 'x' + board[enemy_pawn_id+1:]
+    elif special == 'promotion':
+        pawn = board[target_id]
+        color = color_of(pawn)
+        queen = 'Q' if color == 'w' else 'q'
+        board = board[:target_id] + queen + board[target_id+1:]
 
     game.last_move_from, game.last_move_to = source, target
     game.board = board
