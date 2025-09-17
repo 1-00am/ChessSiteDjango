@@ -33,8 +33,9 @@ def make_move(source, target, game, special=None):
     color = color_of(piece)
     board = game.board
 
-    board = board[:target_id] + board[source_id] + board[target_id+1:]
-    board = board[:source_id] + 'x' + board[source_id+1:]
+    board = swap_piece(board[source_id], target_id, board)
+    board = swap_piece('x', source_id, board)
+
     if special == 'enpassant':
         enemy_pawn_id = index_from_field(game.last_move_to)
         board = board[:enemy_pawn_id] + 'x' + board[enemy_pawn_id+1:]
@@ -45,8 +46,9 @@ def make_move(source, target, game, special=None):
     disable_castles_for_piece(source_id, game)
     #print('lw', game.castle_lw, 'sw', game.castle_sw, 'lb', game.castle_lb, 'sb', game.castle_sb)
 
-    allm = get_player_moves(color, game)
-    print(len(allm), 'moves => ', allm)
+    for i in range(64):
+        if is_attacked(i, 'b', board):
+            print(i, end=' ')
 
     game.last_move_from, game.last_move_to = source, target
     game.board = board

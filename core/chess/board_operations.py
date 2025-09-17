@@ -6,6 +6,9 @@ def start_pose_fen():
 def color_of(piece): 
     return 'x' if piece == 'x' else 'b' if piece.islower() else 'w'
 
+# def change_color_to(piece, color):
+#     return piece.lower() if color == 'b' else piece.upper()
+
 def are_enemies(piece1, piece2):
     return False if (piece1 == 'x' or piece2 == 'x') else color_of(piece1) != color_of(piece2)
 
@@ -34,6 +37,9 @@ def fen_to_64char(fen): # transforms short-fen into 64-character board
         elif fen[i] != '/':
             brd += fen[i]
     return brd
+
+def swap_piece(piece, id, board):
+    return board[:id] + piece + board[id+1:]
 
 def disable_castles_for_piece(piece_id, game):
     board = game.board

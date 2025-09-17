@@ -1,9 +1,22 @@
 from .board_operations import *
 
-# def is_attacked(field_id, enemy_color, game):
-#     board = game.board
-#     funcs = [get_knight_moves, get_bishop_moves, get_rook_moves]
+def is_attacked(field_id, enemy_color, board):
+    source_field = field_from_index(field_id)
+    og_piece = board[field_id]
+    dummy = 'r' if enemy_color == 'w' else 'R'
+    board = swap_piece(dummy, field_id, board) # place a dummy so that "get moves functions" can work
 
+    vector = 1 if enemy_color == 'w' else -1
+    for id in get_pawn_attacks(field_id, vector):
+        if color_of(board[id]) == enemy_color and board[id].lower() == 'p':      
+            board = swap_piece(og_piece, field_id, board)
+            return True
+    for id in get_bishop_moves(source_field, board):
+        pass
+    
+    board = swap_piece(og_piece, field_id, board)
+    return False
+     
 def get_pawn_attacks(source_id, vector):
     moves = []
     if source_id > 7 and source_id < 56:
@@ -58,7 +71,9 @@ def get_king_sp_moves(source_field, board, game):
         'lw': game.castle_lw,
         'sw': game.castle_sw,
         'lb': game.castle_lb,
-        'sb': game.castle_sb
+        'sb': game.castle_sb,
+        'lx': False,
+        'sx': False
     }
     source_id = index_from_field(source_field)
     king = board[source_id]
@@ -66,7 +81,8 @@ def get_king_sp_moves(source_field, board, game):
 
     sp_moves = {}
     if castles['l'+color]:
-        target_id = source_id - 2
+        # target_id = source_id - 2
+        pass
         
     if castles['s'+color]:
         pass
