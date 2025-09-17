@@ -1,7 +1,18 @@
 from .board_operations import *
 
+# def is_attacked(field_id, enemy_color, game):
+#     board = game.board
+#     funcs = [get_knight_moves, get_bishop_moves, get_rook_moves]
 
-
+def get_pawn_attacks(source_id, vector):
+    moves = []
+    if source_id > 7 and source_id < 56:
+        for i in (-1, 1):
+            target_id = source_id + 8*vector + i
+            if abs(target_id%8 - source_id%8) > 1: # protection from going "a -> h" and etc.
+                continue
+            moves.append(target_id)
+    return moves
 
 def get_pawn_sp_moves(source_field, board, game):
     last_move = (game.last_move_from, game.last_move_to) if game.last_move_from else None
@@ -52,12 +63,15 @@ def get_king_sp_moves(source_field, board, game):
     source_id = index_from_field(source_field)
     king = board[source_id]
     color = color_of(king)
+
+    sp_moves = {}
     if castles['l'+color]:
-        pass
+        target_id = source_id - 2
+        
     if castles['s'+color]:
         pass
 
-    return {}
+    return sp_moves
 
 def get_pawn_moves(source_field, board):
     source_id = index_from_field(source_field)
@@ -71,15 +85,12 @@ def get_pawn_moves(source_field, board):
     if source_id > 7 and source_id < 56:
         if board[source_id + 8*vector] == 'x':
             moves.append(source_id + 8*vector) # standard move by 1 square
-        for i in (-1, 1):
-            target_id = source_id + 8*vector + i
-            if abs(target_id%8 - source_id%8) > 1: # protection from going "a -> h" and etc.
-                continue
+            if row == start_row and board[source_id+16*vector] == 'x': 
+                moves.append(source_id + 16*vector) # first move by 2 squares
+        for target_id in get_pawn_attacks(source_id, vector):
             target = board[target_id]
             if are_enemies(pawn, target):
                 moves.append(target_id) # move diagonally when taking
-    if row == start_row and board[source_id+8*vector] == 'x' and board[source_id+16*vector] == 'x': 
-        moves.append(source_id + 16*vector) # first move by 2 squares
     return moves
 
 def get_knight_moves(source_field, board):
