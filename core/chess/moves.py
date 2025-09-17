@@ -22,8 +22,7 @@ def get_pawn_sp_moves(source_field, board, last_move):
             if are_same_type(pawn, nbr) and are_enemies(pawn, nbr) and abs(last_move_from - (nbr_id)) == 16:
                 sp_moves[field_from_index(target_id)] = 'enpassant'
     # promotion (only queen now)
-    promo_row = 1 if color == 'w' else 6
-    print(promo_row, source_id//8)   
+    promo_row = 1 if color == 'w' else 6  
     if source_id // 8 == promo_row:
         for i in (-1, 1):
             target_id = source_id + 8*vector + i
@@ -40,6 +39,7 @@ def get_pawn_sp_moves(source_field, board, last_move):
     return sp_moves
     
 def get_king_sp_moves(source_field, board, last_move):
+    
     return {}
 
 def get_pawn_moves(source_field, board):

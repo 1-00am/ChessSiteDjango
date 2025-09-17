@@ -1,5 +1,5 @@
 from .moves import *
-from .board_operations import field_from_index, index_from_field
+from .board_operations import field_from_index, index_from_field, disable_castles_for_piece
 
 def get_moves(source, board, piece, last_move): #returns moves as an array, and dict of special moves among them (e.g. 'long_castle' 'enpassant')
     moves_dict = {
@@ -29,6 +29,9 @@ def make_move(source, target, game, special=None):
     source_id = index_from_field(source)
     target_id = index_from_field(target)
     board = game.board
+    piece = board[source_id]
+    color = color_of(piece)
+    board = game.board
 
     board = board[:target_id] + board[source_id] + board[target_id+1:]
     board = board[:source_id] + 'x' + board[source_id+1:]
@@ -36,10 +39,11 @@ def make_move(source, target, game, special=None):
         enemy_pawn_id = index_from_field(game.last_move_to)
         board = board[:enemy_pawn_id] + 'x' + board[enemy_pawn_id+1:]
     elif special == 'promotion':
-        pawn = board[target_id]
-        color = color_of(pawn)
         queen = 'Q' if color == 'w' else 'q'
         board = board[:target_id] + queen + board[target_id+1:]
+
+    disable_castles_for_piece(source_id, game)
+    print('lw', game.castle_lw, 'sw', game.castle_sw, 'lb', game.castle_lb, 'sb', game.castle_sb)
 
     game.last_move_from, game.last_move_to = source, target
     game.board = board

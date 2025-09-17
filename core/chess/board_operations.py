@@ -34,3 +34,29 @@ def fen_to_64char(fen): # transforms short-fen into 64-character board
         elif fen[i] != '/':
             brd += fen[i]
     return brd
+
+def disable_castles_for_piece(piece_id, game):
+    board = game.board
+    piece = board[piece_id]
+    color = color_of(piece)
+    if piece.lower() == 'k':
+        if color == 'w':
+            game.castle_lw = False
+            game.castle_sw = False
+        else:
+            game.castle_lb = False
+            game.castle_sb = False
+    elif piece.lower() == 'r':
+        if piece_id%8 == 0:
+            if color == 'w':
+                game.castle_lw = False
+            else:
+                game.castle_lb = False
+        else:
+            if color == 'w':
+                game.castle_sw = False
+            else:
+                game.castle_sb = False
+    return None
+        
+        

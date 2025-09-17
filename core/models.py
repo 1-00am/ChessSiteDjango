@@ -9,13 +9,17 @@ class GamePvsAI(models.Model):
     move_count = models.IntegerField(default=1) #counts white move + black response as 2 separate moves
     last_move_from = models.CharField(max_length=2, null=True, blank=True, default=None)
     last_move_to = models.CharField(max_length=2, null=True, blank=True, default=None)
+    castle_lw = models.BooleanField(default=True) # information about castling availability 
+    castle_sw = models.BooleanField(default=True) # l/s means long/short
+    castle_lb = models.BooleanField(default=True) # w/b means white/black
+    castle_sb = models.BooleanField(default=True)
 
     def fen(self): # return board in short-fen format
         brd = self.board
         fen = ''
         for i in range(64):
             if brd[i] == 'x':
-                if fen[-1].isdigit():
+                if fen and fen[-1].isdigit():
                     fen = fen[:-1] + str(int(fen[-1])+1)
                 else:
                     fen += '1'
