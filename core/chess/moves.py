@@ -1,6 +1,10 @@
 from .board_operations import *
 
-def get_pawn_sp_moves(source_field, board, last_move):
+
+
+
+def get_pawn_sp_moves(source_field, board, game):
+    last_move = (game.last_move_from, game.last_move_to) if game.last_move_from else None
     if not last_move:
         return {}
     source_id = index_from_field(source_field)
@@ -38,8 +42,21 @@ def get_pawn_sp_moves(source_field, board, last_move):
             sp_moves[field_from_index(target_id)] = 'promotion'
     return sp_moves
     
-def get_king_sp_moves(source_field, board, last_move):
-    
+def get_king_sp_moves(source_field, board, game):
+    castles = {
+        'lw': game.castle_lw,
+        'sw': game.castle_sw,
+        'lb': game.castle_lb,
+        'sb': game.castle_sb
+    }
+    source_id = index_from_field(source_field)
+    king = board[source_id]
+    color = color_of(king)
+    if castles['l'+color]:
+        pass
+    if castles['s'+color]:
+        pass
+
     return {}
 
 def get_pawn_moves(source_field, board):

@@ -1,7 +1,7 @@
 from .moves import *
 from .board_operations import field_from_index, index_from_field, disable_castles_for_piece
 
-def get_moves(source, board, piece, last_move): #returns moves as an array, and dict of special moves among them (e.g. 'long_castle' 'enpassant')
+def get_moves(source_field, board, piece, game): #returns moves as an array, and dict of special moves among them (e.g. 'long_castle' 'enpassant')
     moves_dict = {
         'P': get_pawn_moves,
         'N': get_knight_moves,
@@ -16,8 +16,8 @@ def get_moves(source, board, piece, last_move): #returns moves as an array, and 
     }
     piece_type = piece[1] # piece is a 2-letter string where [0] is color and [1] is type
 
-    sp_moves = sp_moves_dict[piece_type](source, board, last_move) if piece_type in ('P', 'K') else {}
-    moves = moves_dict[piece_type](source, board)
+    sp_moves = sp_moves_dict[piece_type](source_field, board, game) if piece_type in ('P', 'K') else {}
+    moves = moves_dict[piece_type](source_field, board)
 
     moves = [field_from_index(move) for move in moves.copy()]
     for move in sp_moves.keys():
@@ -43,7 +43,10 @@ def make_move(source, target, game, special=None):
         board = board[:target_id] + queen + board[target_id+1:]
 
     disable_castles_for_piece(source_id, game)
-    print('lw', game.castle_lw, 'sw', game.castle_sw, 'lb', game.castle_lb, 'sb', game.castle_sb)
+    #print('lw', game.castle_lw, 'sw', game.castle_sw, 'lb', game.castle_lb, 'sb', game.castle_sb)
+
+    allm = get_player_moves(color, game)
+    print(len(allm), 'moves => ', allm)
 
     game.last_move_from, game.last_move_to = source, target
     game.board = board
@@ -53,3 +56,19 @@ def make_move(source, target, game, special=None):
 
 def check_winner(board):
     pass
+
+def get_player_moves(color, game):
+    player_moves = [] # format of a move is (source, target)
+
+    is_player_white = True if color == 'w' else False
+    board = game.board
+    for i in range(64):
+        piece = board[i]
+        if piece == 'x':
+            continue
+        if piece.isupper() == is_player_white: # checks if piece belongs to player
+            moves, _ = get_moves(field_from_index(i), board, color+piece.upper(), game)
+            for move in moves:
+                player_moves.append((field_from_index(i), move))
+
+    return player_moves

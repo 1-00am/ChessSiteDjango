@@ -39,8 +39,7 @@ def move(request, id): # handles all game-logic
         if data['requestType'] == 'onDragStart':      
             source = data['from']
             piece = data['piece']
-            last_move = (game.last_move_from, game.last_move_to) if game.last_move_from else None
-            moves, sp_moves = get_moves(source, game.board, piece, last_move)
+            moves, sp_moves = get_moves(source, game.board, piece, game)
             return JsonResponse({
                 'moves': moves,
                 'sp_moves': sp_moves
