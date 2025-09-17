@@ -6,19 +6,25 @@ def is_attacked(field_id, enemy_color, board):
     dummy = 'r' if enemy_color == 'w' else 'R'
     board = swap_piece(dummy, field_id, board) # place a dummy so that "get moves functions" can work
 
-    vector = 1 if enemy_color == 'w' else -1
-    for id in get_pawn_attacks(field_id, vector):
-        if color_of(board[id]) == enemy_color and board[id].lower() == 'p':      
-            board = swap_piece(og_piece, field_id, board)
-            return True
-    for id in get_bishop_moves(source_field, board):
-        pass
-    
-    board = swap_piece(og_piece, field_id, board)
+    for move_func, piece_types in [
+        (get_pawn_attacks, ['p']),
+        (get_bishop_moves, ['b', 'q']),
+        (get_rook_moves, ['r', 'q']),
+        (get_knight_moves, ['n']),
+        (get_king_moves, ['k']),
+    ]:
+        for id in move_func(source_field, board):
+            if color_of(board[id]) == enemy_color and board[id].lower() in piece_types:      
+                board = swap_piece(og_piece, field_id, board)
+                return True
+            
+    board = swap_piece(og_piece, field_id, board) # remove the dummy
     return False
      
-def get_pawn_attacks(source_id, vector):
+def get_pawn_attacks(source_field, board):
     moves = []
+    source_id = index_from_field(source_field)
+    vector = -1 if color_of(board[source_id]) == 'w' else 1
     if source_id > 7 and source_id < 56:
         for i in (-1, 1):
             target_id = source_id + 8*vector + i
@@ -103,7 +109,7 @@ def get_pawn_moves(source_field, board):
             moves.append(source_id + 8*vector) # standard move by 1 square
             if row == start_row and board[source_id+16*vector] == 'x': 
                 moves.append(source_id + 16*vector) # first move by 2 squares
-        for target_id in get_pawn_attacks(source_id, vector):
+        for target_id in get_pawn_attacks(source_field, board):
             target = board[target_id]
             if are_enemies(pawn, target):
                 moves.append(target_id) # move diagonally when taking

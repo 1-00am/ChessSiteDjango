@@ -46,10 +46,6 @@ def make_move(source, target, game, special=None):
     disable_castles_for_piece(source_id, game)
     #print('lw', game.castle_lw, 'sw', game.castle_sw, 'lb', game.castle_lb, 'sb', game.castle_sb)
 
-    for i in range(64):
-        if is_attacked(i, 'b', board):
-            print(i, end=' ')
-
     game.last_move_from, game.last_move_to = source, target
     game.board = board
     game.save()
