@@ -1,7 +1,7 @@
 from .moves import *
 from .board_operations import field_from_index, index_from_field, disable_castles_for_piece
 
-def get_moves(source_field, board, piece, game): #returns moves as an array, and dict of special moves among them (e.g. 'long_castle' 'enpassant')
+def get_moves(source_field, board, piece, game): #returns moves as an array, and dict of special moves among them (e.g. 'castle_lw' 'enpassant')
     moves_dict = {
         'P': get_pawn_moves,
         'N': get_knight_moves,
@@ -23,7 +23,8 @@ def get_moves(source_field, board, piece, game): #returns moves as an array, and
     for move in sp_moves.keys():
         moves.append(move)
 
-    return moves, sp_moves
+    print(list(set(moves)), sp_moves)
+    return list(set(moves)), sp_moves # removing duplicates from moves
 
 def make_move(source, target, game, special=None):
     source_id = index_from_field(source)

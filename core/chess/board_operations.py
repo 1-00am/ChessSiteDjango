@@ -6,8 +6,8 @@ def start_pose_fen():
 def color_of(piece): 
     return 'x' if piece == 'x' else 'b' if piece.islower() else 'w'
 
-# def change_color_to(piece, color):
-#     return piece.lower() if color == 'b' else piece.upper()
+def opp_color(color):
+    return 'w' if color == 'b' else 'b' if color == 'w' else 'x'
 
 def are_enemies(piece1, piece2):
     return False if (piece1 == 'x' or piece2 == 'x') else color_of(piece1) != color_of(piece2)

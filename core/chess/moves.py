@@ -14,8 +14,8 @@ def is_attacked(field_id, enemy_color, board):
         (get_king_moves, ['k']),
     ]:
         for id in move_func(source_field, board):
-            if color_of(board[id]) == enemy_color and board[id].lower() in piece_types:      
-                board = swap_piece(og_piece, field_id, board)
+            if color_of(board[id]) == enemy_color and board[id].lower() in piece_types:
+                board = swap_piece(og_piece, field_id, board) # remove the dummy
                 return True
             
     board = swap_piece(og_piece, field_id, board) # remove the dummy
@@ -84,15 +84,19 @@ def get_king_sp_moves(source_field, board, game):
     source_id = index_from_field(source_field)
     king = board[source_id]
     color = color_of(king)
-
+    enemy_color = opp_color(color)
+    castling_options = {
+    'l': [-1, -2],
+    's': [1, 2]
+    }
     sp_moves = {}
-    if castles['l'+color]:
-        # target_id = source_id - 2
-        pass
-        
-    if castles['s'+color]:
-        pass
-
+    for side, shifts in castling_options.items():
+        if castles[side + color]:
+            ids_to_check = [source_id + shift for shift in shifts]
+            # check if castle fields are free and not attacked
+            if all(board[id] == 'x' for id in ids_to_check) and all(not is_attacked(id, enemy_color, board) for id in [source_id]+ids_to_check):
+                target_field = field_from_index(source_id+shifts[-1])
+                sp_moves[target_field] = 'castle_' + side + color
     return sp_moves
 
 def get_pawn_moves(source_field, board):
