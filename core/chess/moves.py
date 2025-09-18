@@ -25,7 +25,7 @@ def get_pawn_attacks(source_field, board):
     moves = []
     source_id = index_from_field(source_field)
     vector = -1 if color_of(board[source_id]) == 'w' else 1
-    if source_id > 7 and source_id < 56:
+    if 7 < source_id < 56:
         for i in (-1, 1):
             target_id = source_id + 8*vector + i
             if abs(target_id%8 - source_id%8) > 1: # protection from going "a -> h" and etc.
@@ -74,29 +74,28 @@ def get_pawn_sp_moves(source_field, board, game):
     
 def get_king_sp_moves(source_field, board, game):
     castles = {
-        'lw': game.castle_lw,
-        'sw': game.castle_sw,
-        'lb': game.castle_lb,
-        'sb': game.castle_sb,
-        'lx': False,
-        'sx': False
+        'lw': game.castle_lw, 'sw': game.castle_sw,
+        'lb': game.castle_lb, 'sb': game.castle_sb,
     }
     source_id = index_from_field(source_field)
     king = board[source_id]
     color = color_of(king)
     enemy_color = opp_color(color)
-    castling_options = {
-    'l': [-1, -2],
-    's': [1, 2]
-    }
+    castling_options = {'l': [-1, -2], 's': [1, 2]}
+
     sp_moves = {}
     for side, shifts in castling_options.items():
-        if castles[side + color]:
-            ids_to_check = [source_id + shift for shift in shifts]
-            # check if castle fields are free and not attacked
-            if all(board[id] == 'x' for id in ids_to_check) and all(not is_attacked(id, enemy_color, board) for id in [source_id]+ids_to_check):
-                target_field = field_from_index(source_id+shifts[-1])
-                sp_moves[target_field] = side + color
+        can_castle = castles.get(side + color, False)
+        if not can_castle:
+            continue
+        ids_to_check = [source_id + shift for shift in shifts]
+        # check if castle fields are free and not attacked
+        all_free = all(board[i] == 'x' for i in ids_to_check)
+        none_attacked = all(not is_attacked(i, enemy_color, board) for i in [source_id] + ids_to_check)
+        if all_free and none_attacked:
+            target_field = field_from_index(source_id+shifts[-1])
+            sp_moves[target_field] = side + color
+
     return sp_moves
 
 def get_pawn_moves(source_field, board):
@@ -108,7 +107,7 @@ def get_pawn_moves(source_field, board):
 
     vector = -1 if color == 'w' else 1
     start_row = 2 if color == 'w' else 7
-    if source_id > 7 and source_id < 56:
+    if 7 < source_id < 56:
         if board[source_id + 8*vector] == 'x':
             moves.append(source_id + 8*vector) # standard move by 1 square
             if row == start_row and board[source_id+16*vector] == 'x': 
@@ -128,7 +127,7 @@ def get_knight_moves(source_field, board):
     for id in target_ids:
         if abs(id%8 - source_id%8) > 2: # protection from going "a -> h" and etc.
             continue
-        if id >= 0 and id < 64 and not are_friends(knight, board[id]):
+        if 0 <= id < 64 and not are_friends(knight, board[id]):
             moves.append(id)
     return moves
 
@@ -170,6 +169,6 @@ def get_king_moves(source_field, board):
     for id in target_ids:
         if abs(id%8 - source_id%8) > 1: # protection from going "a -> h" and "h -> a" file
             continue
-        if id >= 0 and id < 64 and not are_friends(king, board[id]):
+        if 0 <= id < 64 and not are_friends(king, board[id]):
                 moves.append(id) # standard moves by 1 square
     return moves
