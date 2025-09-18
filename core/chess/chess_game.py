@@ -15,15 +15,11 @@ def get_moves(source_field, board, piece, game): #returns moves as an array, and
         'K': get_king_sp_moves
     }
     piece_type = piece[1] # piece is a 2-letter string where [0] is color and [1] is type
-
     sp_moves = sp_moves_dict[piece_type](source_field, board, game) if piece_type in ('P', 'K') else {}
     moves = moves_dict[piece_type](source_field, board)
+    moves = {field_from_index(m) for m in moves} | set(sp_moves.keys()) # use set to remove duplicates
 
-    moves = [field_from_index(move) for move in moves.copy()]
-    for move in sp_moves.keys():
-        moves.append(move)
-
-    return list(set(moves)), sp_moves # removing duplicates from moves
+    return list((moves)), sp_moves 
 
 def make_move(source, target, game, special=None):
     source_id = index_from_field(source)
@@ -32,25 +28,22 @@ def make_move(source, target, game, special=None):
     piece = board[source_id]
     color = color_of(piece)
     
-
     board = swap_piece(board[source_id], target_id, board)
     board = swap_piece('x', source_id, board)
 
     if special == 'enpassant':
         enemy_pawn_id = index_from_field(game.last_move_to)
-        board = board[:enemy_pawn_id] + 'x' + board[enemy_pawn_id+1:]
+        board = swap_piece('x', enemy_pawn_id, board)
     elif special == 'promotion':
         queen = 'Q' if color == 'w' else 'q'
         board = swap_piece(queen, target_id, board)
     elif special: # goes through when special is a castle variant
         coords = {
-            'l': 0,
-            's': 7,
-            'b': 0,
-            'w': 56       
+            'lb': 0, 'sb': 7,
+            'lw': 56,'sw': 63   
         }
-        vector = 1 if special[-2] == 'l' else -1
-        rook_id = coords[special[-2]]+coords[special[-1]]
+        vector = 1 if special[0] == 'l' else -1
+        rook_id = coords[special]
         rook = board[rook_id]
         board = swap_piece(rook, target_id+vector, board)
         board = swap_piece('x', rook_id, board)

@@ -96,7 +96,7 @@ def get_king_sp_moves(source_field, board, game):
             # check if castle fields are free and not attacked
             if all(board[id] == 'x' for id in ids_to_check) and all(not is_attacked(id, enemy_color, board) for id in [source_id]+ids_to_check):
                 target_field = field_from_index(source_id+shifts[-1])
-                sp_moves[target_field] = 'castle_' + side + color
+                sp_moves[target_field] = side + color
     return sp_moves
 
 def get_pawn_moves(source_field, board):
