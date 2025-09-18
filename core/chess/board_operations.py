@@ -41,28 +41,24 @@ def fen_to_64char(fen): # transforms short-fen into 64-character board
 def swap_piece(piece, id, board):
     return board[:id] + piece + board[id+1:]
 
-def disable_castles_for_piece(piece_id, game):
-    board = game.board
-    piece = board[piece_id]
+def disable_castles_for_piece(piece_id, game): # changes castling attributes in game to False when it becomes unavailable
+    piece = game.board[piece_id]
     color = color_of(piece)
-    if piece.lower() == 'k':
-        if color == 'w':
-            game.castle_lw = False
-            game.castle_sw = False
-        else:
-            game.castle_lb = False
-            game.castle_sb = False
-    elif piece.lower() == 'r':
-        if piece_id%8 == 0:
-            if color == 'w':
-                game.castle_lw = False
-            else:
-                game.castle_lb = False
-        else:
-            if color == 'w':
-                game.castle_sw = False
-            else:
-                game.castle_sb = False
+    castles = {
+        ('k', 'w'): ['castle_lw', 'castle_sw'],
+        ('k', 'b'): ['castle_lb', 'castle_sb'],
+        ('r', 'w', 0): ['castle_lw'],
+        ('r', 'w', 1): ['castle_sw'],
+        ('r', 'b', 0): ['castle_lb'],
+        ('r', 'b', 1): ['castle_sb'],
+    }
+
+    key = (piece.lower(), color)
+    if piece.lower() == 'r':
+        key = (piece.lower(), color, 0 if piece_id % 8 == 0 else 1)
+
+    for attr in castles.get(key, []):
+        setattr(game, attr, False)
     return None
         
         

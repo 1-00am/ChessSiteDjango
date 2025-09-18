@@ -23,7 +23,6 @@ def get_moves(source_field, board, piece, game): #returns moves as an array, and
     for move in sp_moves.keys():
         moves.append(move)
 
-    print(list(set(moves)), sp_moves)
     return list(set(moves)), sp_moves # removing duplicates from moves
 
 def make_move(source, target, game, special=None):
@@ -32,7 +31,7 @@ def make_move(source, target, game, special=None):
     board = game.board
     piece = board[source_id]
     color = color_of(piece)
-    board = game.board
+    
 
     board = swap_piece(board[source_id], target_id, board)
     board = swap_piece('x', source_id, board)
@@ -42,10 +41,22 @@ def make_move(source, target, game, special=None):
         board = board[:enemy_pawn_id] + 'x' + board[enemy_pawn_id+1:]
     elif special == 'promotion':
         queen = 'Q' if color == 'w' else 'q'
-        board = board[:target_id] + queen + board[target_id+1:]
+        board = swap_piece(queen, target_id, board)
+    elif special: # goes through when special is a castle variant
+        coords = {
+            'l': 0,
+            's': 7,
+            'b': 0,
+            'w': 56       
+        }
+        vector = 1 if special[-2] == 'l' else -1
+        rook_id = coords[special[-2]]+coords[special[-1]]
+        rook = board[rook_id]
+        board = swap_piece(rook, target_id+vector, board)
+        board = swap_piece('x', rook_id, board)
 
     disable_castles_for_piece(source_id, game)
-    #print('lw', game.castle_lw, 'sw', game.castle_sw, 'lb', game.castle_lb, 'sb', game.castle_sb)
+    disable_castles_for_piece(target_id, game)
 
     game.last_move_from, game.last_move_to = source, target
     game.board = board
@@ -61,13 +72,13 @@ def get_player_moves(color, game):
 
     is_player_white = True if color == 'w' else False
     board = game.board
-    for i in range(64):
-        piece = board[i]
+    for id in range(64):
+        piece = board[id]
         if piece == 'x':
             continue
         if piece.isupper() == is_player_white: # checks if piece belongs to player
-            moves, _ = get_moves(field_from_index(i), board, color+piece.upper(), game)
+            moves, _ = get_moves(field_from_index(id), board, color+piece.upper(), game)
             for move in moves:
-                player_moves.append((field_from_index(i), move))
+                player_moves.append((field_from_index(id), move))
 
     return player_moves
