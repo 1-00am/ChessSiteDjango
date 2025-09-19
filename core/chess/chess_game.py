@@ -18,8 +18,7 @@ def get_moves(source_field, board, piece, game): #returns moves as a list, and d
     sp_moves = sp_moves_dict[piece_type](source_field, board, game) if piece_type in ('P', 'K') else {}
     moves = moves_dict[piece_type](source_field, board)
     moves = {field_from_index(m) for m in moves} | set(sp_moves.keys()) # using set to remove duplicates
-    moves = remove_illegal_moves(list(moves), sp_moves, game)
-
+    moves = remove_illegal_moves(source_field, list(moves), sp_moves, game)
     return moves, sp_moves 
 
 def make_move(source, target, game, special=None): # moves pieces across the board without registering
@@ -63,9 +62,15 @@ def register_move(source, target, game, special=None): # registers move in game 
     game.board = board
     game.save()
 
-def remove_illegal_moves(moves, sp_moves, game):
-    new_moves = moves
-    return new_moves
+def remove_illegal_moves(source_field, moves, sp_moves, game):
+    color = color_of(game.board[index_from_field(source_field)])
+    for move in moves.copy():
+        special = sp_moves.get(move, None)
+        board = make_move(source_field, move, game, special)
+        king_id = game.king_w if color == 'w' else game.king_b
+        if is_attacked(king_id, opp_color(color), board):
+            moves.remove(move)
+    return moves
 
 def get_player_moves(color, game):
     player_moves = [] # format of a move is (source, target)
