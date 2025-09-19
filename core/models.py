@@ -13,6 +13,8 @@ class GamePvsAI(models.Model):
     castle_sw = models.BooleanField(default=True) # l/s means long/short
     castle_lb = models.BooleanField(default=True) # w/b means white/black
     castle_sb = models.BooleanField(default=True)
+    king_w = models.IntegerField(default=60)
+    king_b = models.IntegerField(default=4)
 
     def fen(self): # return board in short-fen format
         brd = self.board
