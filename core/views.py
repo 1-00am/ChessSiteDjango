@@ -57,4 +57,15 @@ def move(request, id): # handles all game-logic
         # should not go here for now
         return JsonResponse({
         })
+    
+
+# def board(request, id): # experimental feature
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         game_id = data['gameId']
+#         game = get_object_or_404(GamePvsAI, pk=game_id)
+#         return JsonResponse({
+#             'board': game.fen(),
+#         })
+
 

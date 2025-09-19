@@ -78,7 +78,7 @@ function onDrop (source, target, piece, newPos, oldPos, orientation) {
     special = spMoves.hasOwnProperty(target) ? spMoves[target] : null
     postBoardState(rqType='onDrop', Chessboard.objToFen(newPos), source, target, special)
     .then(data => {
-        console.log(data)
+        // console.log(data)
         board.position(data['board'])
     })
 }
@@ -114,3 +114,24 @@ async function initBoard() {
 
 initBoard()
 
+// experimental feature
+
+// function getBoard() {
+//     return fetch('/game/load', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-CSRFToken': csrftoken
+//             },
+//             body: JSON.stringify({ 
+//                 gameId: gameId    
+//             })
+//         })
+//         .then(data => data.json())
+//         .then(data => {
+//         console.log(data)
+//         board.position(data['board'])
+//         })
+// }
+
+// setInterval(getBoard, 2000);
