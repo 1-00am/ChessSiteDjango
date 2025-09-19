@@ -1,6 +1,6 @@
 from .board_operations import *
 
-def is_attacked(field_id, enemy_color, board):
+def is_attacked(field_id, enemy_color, board): # return True when any of enemy_color pieces can attack given field 
     source_field = field_from_index(field_id)
     og_piece = board[field_id]
     dummy = 'r' if enemy_color == 'w' else 'R'
@@ -21,7 +21,7 @@ def is_attacked(field_id, enemy_color, board):
     board = swap_piece(og_piece, field_id, board) # remove the dummy
     return False
      
-def get_pawn_attacks(source_field, board):
+def get_pawn_attacks(source_field, board): # return fields that a pawn would attack from source_field
     moves = []
     source_id = index_from_field(source_field)
     vector = -1 if color_of(board[source_id]) == 'w' else 1
@@ -131,7 +131,7 @@ def get_knight_moves(source_field, board):
             moves.append(id)
     return moves
 
-def move_search_in_directions(source_field, board, directions): # similiar code for bishop and rook made into a function
+def move_search_in_directions(source_field, board, directions): # similar code for bishop and rook made into a function
     moves = []
     source_id = index_from_field(source_field)
     myself = board[source_id]
@@ -139,12 +139,12 @@ def move_search_in_directions(source_field, board, directions): # similiar code 
         target_id = source_id
         while True:
             target_id += 8*dire[0] + dire[1]
-            if target_id < 0 or target_id > 63 or are_friends(myself, board[target_id]):
+            if target_id < 0 or target_id > 63 or are_friends(myself, board[target_id]): # break if reached edge or friendly piece
                 break
             elif abs(target_id%8 - (target_id-dire[1])%8) > 1: # break if looped over rows during vertical moves search 
                 break
-            elif are_enemies(myself, board[target_id]):
-                moves.append(target_id) # break after adding enemy piece as move
+            elif are_enemies(myself, board[target_id]): # break after adding enemy piece as move
+                moves.append(target_id) 
                 break
             else:
                 moves.append(target_id) # add empty field

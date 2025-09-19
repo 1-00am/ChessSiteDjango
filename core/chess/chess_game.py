@@ -1,7 +1,7 @@
 from .moves import *
 from .board_operations import field_from_index, index_from_field, disable_castles_for_piece
 
-def get_moves(source_field, board, piece, game): #returns moves as an array, and dict of special moves among them (e.g. 'castle_lw' 'enpassant')
+def get_moves(source_field, board, piece, game): #returns moves as a list, and dict of special moves among them (e.g. 'enpassant')
     moves_dict = {
         'P': get_pawn_moves,
         'N': get_knight_moves,
@@ -14,14 +14,14 @@ def get_moves(source_field, board, piece, game): #returns moves as an array, and
         'P': get_pawn_sp_moves,
         'K': get_king_sp_moves
     }
-    piece_type = piece[1] # piece is a 2-letter string where [0] is color and [1] is type
+    piece_type = piece[1] # piece is a 2-letter string where [0] is color and [1] is type (eg. wP, bQ)
     sp_moves = sp_moves_dict[piece_type](source_field, board, game) if piece_type in ('P', 'K') else {}
     moves = moves_dict[piece_type](source_field, board)
-    moves = {field_from_index(m) for m in moves} | set(sp_moves.keys()) # use set to remove duplicates
+    moves = {field_from_index(m) for m in moves} | set(sp_moves.keys()) # using set to remove duplicates
 
     return list((moves)), sp_moves 
 
-def make_move(source, target, game, special=None):
+def make_move(source, target, game, special=None): # moves pieces across the board without registering
     source_id = index_from_field(source)
     target_id = index_from_field(target)
     board = game.board
@@ -48,17 +48,15 @@ def make_move(source, target, game, special=None):
         board = swap_piece(rook, target_id+vector, board)
         board = swap_piece('x', rook_id, board)
 
-    disable_castles_for_piece(source_id, game)
+    disable_castles_for_piece(source_id, game) 
     disable_castles_for_piece(target_id, game)
+    return board
 
+def register_move(source, target, game, special=None): # registers move in game data
+    board = make_move(source, target, game, special)
     game.last_move_from, game.last_move_to = source, target
     game.board = board
     game.save()
-    return None
-
-
-def check_winner(board):
-    pass
 
 def get_player_moves(color, game):
     player_moves = [] # format of a move is (source, target)
@@ -70,8 +68,11 @@ def get_player_moves(color, game):
         if piece == 'x':
             continue
         if piece.isupper() == is_player_white: # checks if piece belongs to player
-            moves, _ = get_moves(field_from_index(id), board, color+piece.upper(), game)
+            moves, _ = get_moves(field_from_index(id), board, color+piece.upper(), game) # _ holds special moves, not used right now
             for move in moves:
                 player_moves.append((field_from_index(id), move))
 
     return player_moves
+
+def check_winner(board):
+    pass

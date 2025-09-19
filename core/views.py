@@ -45,7 +45,7 @@ def move(request, id): # handles all game-logic
                 'sp_moves': sp_moves
             })
         elif data['requestType'] == 'onDrop':
-            make_move(source=data['from'], target=data['to'], game=game, special=data['special'])
+            register_move(source=data['from'], target=data['to'], game=game, special=data['special'])
             return JsonResponse({
                 'winner': None,
                 'board': game.fen()

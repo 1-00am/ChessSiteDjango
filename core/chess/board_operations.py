@@ -43,6 +43,8 @@ def swap_piece(piece, id, board):
 
 def disable_castles_for_piece(piece_id, game): # changes castling attributes in game to False when it becomes unavailable
     piece = game.board[piece_id]
+    if piece.lower() != 'k' and piece.lower() != 'r': # exit faster when piece can't castle anyway
+        return None
     color = color_of(piece)
     castles = {
         ('k', 'w'): ['castle_lw', 'castle_sw'],
